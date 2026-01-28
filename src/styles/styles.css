@@ -107,7 +107,8 @@ body {
     transition: color 0.3s ease, transform 0.2s ease;
 }
 
-#copy:active, #toggle_visibility:active {
+#copy:active,
+#toggle_visibility:active {
     transform: scale(0.9);
 }
 
@@ -164,4 +165,23 @@ body {
 
 #generate:hover {
     background-color: var(--color-primary-2);
+}
+
+/* RESPONSIVIDADE */
+
+@media screen and (max-width: 1020px) {
+
+    /* Items */
+    #password_items {
+        width: 100%;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px;
+    }
+    
+    #generate {
+        border-radius: 10px;
+}
 }
