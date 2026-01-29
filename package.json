@@ -1,0 +1,24 @@
+{
+  "name": "pass_generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CAI0SAMPAI0/Pass_generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CAI0SAMPAI0/Pass_generator/issues"
+  },
+  "homepage": "https://github.com/CAI0SAMPAI0/Pass_generator#readme",
+  "devDependencies": {
+    "electron": "^40.1.0"
+  }
+}
