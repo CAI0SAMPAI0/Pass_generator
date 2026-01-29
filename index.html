@@ -37,11 +37,17 @@
             </div>
         </div>
 
+        <!-- medidor de força -->
+        <div id="strength_container">
+            <div id="strength_bar"></div>
+            <span id="strength_text"></span>
+        </div>
+
         <!-- Password options -->
         <div id="password_items">
             <!-- Password length input -->
             <div class="item">
-                <input id="size" name="size" type="number">
+                <input id="size" name="size" type="number" min="4" max="50">
                 <label for="size">
                     Quantidade de caracteres
                 </label>
@@ -51,7 +57,7 @@
             <div class="item">
                 <input type="checkbox" name="include_uppercase" id="include_uppercase">
                 <label for="include_uppercase">
-                    Inserir letra maiúscula
+                    Letras maiúsculas
                 </label>
             </div>
 
@@ -59,7 +65,7 @@
             <div class="item">
                 <input type="checkbox" name="include_lowercase" id="include_lowercase">
                 <label for="include_lowercase">
-                    Inserir letra minúscula
+                    Letras minúsculas
                 </label>
             </div>
 
@@ -79,10 +85,15 @@
                 </label>
             </div>
 
-            <!-- Generate password button -->
-            <button id="generate">
-                Gerar a senha
-            </button>
+            <div class="button-row">
+                <button id="generate">Gerar a senha</button>
+                <button id="clear_btn">Limpar</button>
+            </div>
+        </div>
+
+        <div id="history_container">
+            <h4>Histórico (últimas 10)</h4>
+            <ul id="history_list"></ul>
         </div>
     </div>
 

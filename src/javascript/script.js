@@ -1,6 +1,7 @@
 // variáveis senhas
 let realPassword = '';
 let isPasswordVisible = false;
+let history = [];
 
 // Function to get the selected character types
 function getChartTypes() {
@@ -13,25 +14,10 @@ function getChartTypes() {
     // Initialize an empty array to store selected character types
     const charTypes = [];
 
-    // If uppercase is selected, add uppercase characters to charTypes array
-    if (uppercase) {
-        charTypes.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-    }
-
-    // If lowercase is selected, add lowercase characters to charTypes array
-    if (lowercase) {
-        charTypes.push('abcdefghijklmnopqrstuvwxyz');
-    }
-
-    // If number is selected, add numeric characters to charTypes array
-    if (number) {
-        charTypes.push('0123456789');
-    }
-
-    // If specialCharacter is selected, add special characters to charTypes array
-    if (specialCharacter) {
-        charTypes.push('!@#$%&*()_-+={}[]|\\/?><:;\'.,');
-    }
+    if (uppercase) charTypes.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    if (lowercase) charTypes.push('abcdefghijklmnopqrstuvwxyz');
+    if (number) charTypes.push('0123456789');
+    if (specialCharacter) charTypes.push('!@#$%&*()_-+={}[]|\\/?><:;\'.,');
 
     // Return the array of selected character types
     return charTypes;
@@ -48,6 +34,93 @@ function getPasswordSize() {
     }
 
     return size;
+}
+
+// function medidor de senha
+function updateStrength(password) {
+    const bar = document.querySelector('#strength_bar');
+    const text = document.querySelector('#strength_text');
+    const container = document.querySelector('#strength_container');
+
+    if (!container) return; // Proteção caso o elemento não exista
+    container.style.display = 'flex';
+
+    let score = 0;
+    if (password.length > 10) score++;
+    if (password.length > 15) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    const levels = [
+        { width: '20%', color: '#dc2626', label: 'Muito Fraca' },
+        { width: '40%', color: '#fbbf24', label: 'Fraca' },
+        { width: '60%', color: '#f59e0b', label: 'Média' },
+        { width: '80%', color: '#84cc16', label: 'Forte' },
+        { width: '100%', color: '#22c55e', label: 'Excelente' }
+    ];
+
+    const result = levels[Math.min(score, 4)];
+    bar.style.width = result.width;
+    bar.style.backgroundColor = result.color;
+    text.textContent = result.label;
+}
+
+// function update history
+function updateHistory(pw) {
+    history.unshift(pw);
+    if (history.length > 10) history.pop();
+
+    const list = document.querySelector('#history_list');
+    if (!list) return;
+
+    list.innerHTML = ''; // limpa a lista atual
+    history.forEach(passData => {
+        const li = document.createElement('li');
+        let isItemVisible = false;
+
+        // 1. O texto da senha (inicia mascarado)
+        const passSpan = document.createElement('span');
+        passSpan.className = 'history-pass-text';
+        passSpan.textContent = '*'.repeat(passData.length);
+
+        // 2. Container para os botões
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'history-actions';
+
+        // Botão Copiar
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'history-btn';
+        copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+        copyBtn.onclick = function () {
+            navigator.clipboard.writeText(passData);
+            message('Senha do histórico copiada!', 'success');
+        };
+
+        // Botão Ver/Esconder
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'history-btn';
+        viewBtn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+        viewBtn.onclick = function () {
+            const icon = viewBtn.querySelector('i');
+            if (isItemVisible) {
+                passSpan.textContent = '*'.repeat(passData.length);
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                isItemVisible = false;
+            } else {
+                passSpan.textContent = passData;
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                isItemVisible = true;
+            }
+        };
+
+        // Monta o item da lista
+        actionsDiv.appendChild(copyBtn);
+        actionsDiv.appendChild(viewBtn);
+        li.appendChild(passSpan);
+        li.appendChild(actionsDiv);
+        list.appendChild(li);
+    });
 }
 
 // Function to generate a password with specified size and character types
@@ -102,7 +175,6 @@ document.querySelector('#generate').addEventListener('click', function () {
         message('Selecione pelo menos um tipo de caractere!', 'danger');
         return;
     }
-
     // Generate the password with the specified size and character types
     const passwordGenerated = generatePassword(size, charTypes);
     realPassword = passwordGenerated;
@@ -120,6 +192,29 @@ document.querySelector('#generate').addEventListener('click', function () {
     const eyeIcon = document.querySelector('#toggle_visibility i');
     eyeIcon.classList.remove('fa-eye-slash');
     eyeIcon.classList.add('fa-eye');
+
+    // Atualiza força e histórico
+    updateStrength(realPassword);
+    updateHistory(realPassword);
+});
+
+// Botão Limpar
+document.querySelector('#clear_btn')?.addEventListener('click', function () {
+    resetPasswordDisplay();
+    // Reseta medidor
+    const strengthContainer = document.querySelector('#strength_container');
+    if (strengthContainer) strengthContainer.style.display = 'none';
+
+    // Reseta checkboxes e inputs
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelector('#size').value = '';
+
+    // Reseta histórico visual
+    const list = document.querySelector('#history_list');
+    if (list) list.innerHTML = '';
+    history = [];
+
+    message('Campos limpos!', 'success');
 });
 
 function resetPasswordDisplay() {
@@ -137,7 +232,7 @@ document.querySelector('#copy').addEventListener('click', function () {
     message('Senha copiada com sucesso!', 'success');
 });
 
-
+// Event listener for visibility toggle
 document.querySelector('#toggle_visibility').addEventListener('click', function () {
     if (!realPassword) return;
 
