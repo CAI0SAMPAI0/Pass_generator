@@ -173,7 +173,8 @@ body {
     width: 100%;
     max-width: 400px;
     margin-top: -5px;
-    display: none; /* Aparece apenas com a senha */
+    display: none;
+    /* Aparece apenas com a senha */
     flex-direction: column;
     gap: 5px;
 }
@@ -221,7 +222,8 @@ body {
     gap: 10px;
 }
 
-#copy, #toggle_visibility {
+#copy,
+#toggle_visibility {
     background-color: transparent;
     border: none;
     color: var(--color-primary-1);
@@ -230,7 +232,10 @@ body {
     transition: transform 0.2s, color 0.4s;
 }
 
-#copy:active, #toggle_visibility:active { transform: scale(0.9); }
+#copy:active,
+#toggle_visibility:active {
+    transform: scale(0.9);
+}
 
 /* Medidor de Força */
 #strength_container {
@@ -263,7 +268,9 @@ body {
     width: 100%;
 }
 
-#generate { flex: 2; }
+#generate {
+    flex: 2;
+}
 
 #clear_btn {
     flex: 1;
@@ -310,7 +317,8 @@ body {
 
 /* Estilos para a senha dentro do histórico */
 .history-pass-text {
-    flex: 1; /* Ocupa o espaço restante */
+    flex: 1;
+    /* Ocupa o espaço restante */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

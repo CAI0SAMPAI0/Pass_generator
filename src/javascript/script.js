@@ -1,3 +1,4 @@
+
 // variáveis senhas
 let realPassword = '';
 let isPasswordVisible = false;
@@ -249,4 +250,3 @@ document.querySelector('#toggle_visibility').addEventListener('click', function 
         isPasswordVisible = true;
     }
 });
-
