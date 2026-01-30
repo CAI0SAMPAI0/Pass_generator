@@ -1,17 +1,37 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
-
-/* Define color variables */
+/* --- VARIÁVEIS E TEMA --- */
 :root {
-    --color-primary-1: #00E5FF;
-    --color-primary-2: #00E5FF66;
+    /* Cores Principais */
+    --color-primary: #4ebebe; /* Ciano vibrante */
+    --color-primary-dark: #3aa1a1;
+    --color-accent-hover: #17e8e8; /* Brilho para hover */
+    --color-danger: #ff4d4d;
+    
+    /* Cores de Fundo e Superfície (Dark Mode Profundo) */
+    --color-bg-main: #0b1121; /* Fundo da página mais escuro */
+    --color-card: #161f32;    /* Cartões ligeiramente mais claros */
+    --color-input-bg: #0b1121;
+    
+    /* Texto e Bordas */
+    --color-text-main: #f8fafc;
+    --color-text-muted: #94a3b8;
+    --color-border: rgba(78, 190, 190, 0.2); /* Borda sutil ciano */
+    --color-border-hover: rgba(78, 190, 190, 0.5);
 
-    --color-neutral-1: #f8fafc;
-    --color-neutral-2: #24232b;
-    --color-neutral-3: #13121a;
+    /* Configurações de Ícones (O Ponto Chave) */
+    --icon-size-std: 42px; /* Tamanho padrão para ícones quadrados */
+    --icon-bg-default: rgba(255, 255, 255, 0.03); /* Fundo translúcido */
+    --icon-border-default: rgba(255, 255, 255, 0.1); /* Borda sutil */
+    
+    /* Efeitos */
+    --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 15px rgba(78, 190, 190, 0.4); /* Brilho de neon */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-full: 50%;
 }
 
-/* Global */
+/* --- RESET GLOBAL --- */
 * {
     margin: 0;
     padding: 0;
@@ -24,344 +44,398 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: var(--color-neutral-3);
-    user-select: none;
+    background-color: var(--color-bg-main);
+    /* Sutil gradiente de fundo para modernidade */
+    background-image: radial-gradient(circle at top right, rgba(78, 190, 190, 0.1), transparent 40%);
+    color: var(--color-text-main);
+    padding: 20px;
 }
 
-/* Container */
 #container {
+    width: 100%;
+    max-width: 460px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    gap: 25px;
+    position: relative;
+    z-index: 1;
 }
 
+/* --- ESTILIZAÇÃO BASE DE TODOS OS ÍCONES (Requisição Principal) --- */
+/* Alvo: Ícones FontAwesome e Imagens de Serviço/Logo */
+i.fa-solid, 
+img.service-icon,
 #password_img {
-    width: 100px;
-}
-
-#title {
-    color: var(--color-neutral-1);
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-
-/* Password */
-#password_container {
-    width: 100%;
-    max-width: 400px;
-    display: none;
-    justify-content: space-between;
+    display: inline-flex;
     align-items: center;
-    background-color: var(--color-neutral-2);
-    color: var(--color-neutral-1);
-    border-radius: 8px;
-    padding: 8px 18px;
+    justify-content: center;
+    /* Define a forma quadrada com bordas arredondadas */
+    width: var(--icon-size-std);
+    height: var(--icon-size-std);
+    padding: 8px; /* Espaço interno para o ícone respirar */
+    
+    /* Estilo Básico (Borda e Fundo Escuro) */
+    background-color: var(--icon-bg-default);
+    border: 1px solid var(--icon-border-default);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    
+    /* Prepara a animação */
+    transition: var(--transition-smooth);
+    /* Garante que a imagem não distorça */
+    object-fit: contain; 
+    transition: all 0.3s ease;
 }
 
-/* animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Animação Global de Hover nos Ícones */
+/* Quando passamos o mouse diretamente no ícone OU no botão que o contém */
+button:hover i.fa-solid,
+.vault-item:hover img.service-icon,
+#password_img:hover {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary-hover);
+    color: var(--color-bg-main); /* Ícone fica escuro para contraste */
+    /* A Animação: Escala e leve rotação */
+    transform: translateY(-3px) scale(1.1) rotate(3deg);
+    box-shadow: var(--shadow-glow);
 }
 
-#password_container.show {
+/* Ajuste específico para a imagem do logo principal */
+#password_img {
+    width: 80px; /* Um pouco maior que os outros */
+    height: 80px;
+    margin: 0 auto 15px;
+    display: block;
+    border-radius: var(--radius-lg);
+    /* O SVG original é preto, precisamos inverter a cor para branco via filtro */
+    filter: invert(1) brightness(0.8); 
+}
+#password_img:hover {
+    /* Remove o filtro e aplica a cor primária no hover */
+    filter: none;
+    background-color: var(--color-primary);
+}
+
+
+/* --- NAVEGAÇÃO MODERNA --- */
+.app-nav {
     display: flex;
-    animation: fadeInUp 0.4s ease-out forwards;
+    gap: 10px;
+    background: var(--color-card);
+    padding: 8px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
 }
 
-#password {
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.app-nav button {
     flex: 1;
-    margin-right: 10px;
-}
-
-/* button-group */
-.button-group {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-#copy,
-#toggle_visibility {
-    background-color: transparent;
+    background: transparent;
     border: none;
-    color: var(--color-primary-1);
-    height: 40px;
-    width: 30px;
-    font-size: 18px;
+    color: var(--color-text-muted);
+    padding: 12px;
     cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: var(--transition-smooth);
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease, transform 0.2s ease;
+    gap: 12px; /* Espaço entre ícone e texto */
+    font-size: 0.95rem;
 }
 
-#copy:active,
-#toggle_visibility:active {
-    transform: scale(0.9);
+/* Estado Ativo da Navegação */
+.app-nav button.active {
+    background: rgba(78, 190, 190, 0.15); /* Fundo ciano translúcido */
+    color: var(--color-primary);
+    border: 1px solid var(--color-border-hover);
+}
+/* Ícone do botão ativo já começa 'aceso' */
+.app-nav button.active i.fa-solid {
+    background-color: var(--color-primary);
+    color: var(--color-bg-main);
+    border-color: var(--color-primary-hover);
+    box-shadow: var(--shadow-glow);
 }
 
-#copy:hover,
-#toggle_visibility:hover {
-    color: var(--color-primary-2);
-}
 
-/* Items */
-#password_items {
-    width: 400px;
-    background-color: var(--color-neutral-2);
-    color: var(--color-neutral-1);
-    border-radius: 8px;
+/* --- CARTÕES E LAYOUT --- */
+.page {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 18px;
+    gap: 20px;
 }
 
-.item {
-    display: flex;
-    gap: 14px;
+.card, #password_container {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
+    gap: 20px;
 }
 
-#size {
-    width: 50px;
+/* Efeito sutil de hover nos cartões */
+.card:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(-2px);
+}
+
+#title {
     text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: -10px;
+    color: var(--color-text-main);
+    gap: 10px;
+}
+
+
+/* --- DISPLAY DE SENHA --- */
+#password_container {
+    background: rgba(11, 17, 33, 0.8); /* Mais escuro que o cartão normal */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 18px 24px;
+    border: 2px dashed var(--color-border); /* Borda tracejada moderna */
+}
+
+.password-text {
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(78, 190, 190, 0.3);
+    word-break: break-all;
+    margin-right: 15px;
+}
+
+.password-actions {
+    display: flex;
+    gap: 10px;
+}
+/* Botões de ação (olho/copiar) transparentes para focar no ícone */
+.action-btn {
+    background: transparent;
     border: none;
-    border-radius: 4px;
-}
-
-#size::-webkit-inner-spin-button,
-#size::-webkit-outer-spin-button {
-    opacity: 1;
-}
-
-#size:focus {
-    outline: 1px solid var(--color-primary-1);
-}
-
-#generate {
-    background-color: var(--color-primary-1);
-    border: none;
-    margin-top: 12px;
-    padding: 10px 0px;
-    border-radius: 4px;
-    color: var(--color-neutral-3);
-    font-size: 16px;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color .4s;
+    padding: 0;
 }
 
-#generate:hover {
-    background-color: var(--color-primary-2);
-}
 
-/* Medidor de Força */
+/* --- CONTROLES E INPUTS --- */
+/* Barra de Força */
 #strength_container {
-    width: 100%;
-    max-width: 400px;
-    margin-top: -5px;
-    display: none;
-    /* Aparece apenas com a senha */
-    flex-direction: column;
-    gap: 5px;
+    background: var(--color-bg-main);
+    padding: 8px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--icon-border-default);
 }
-
 #strength_bar {
     height: 6px;
-    border-radius: 3px;
-    background-color: #444;
-    transition: width 0.4s, background-color 0.4s;
-    width: 0%;
+    border-radius: var(--radius-full);
+    background: #334155;
+    transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.3s;
 }
-
 #strength_text {
-    font-size: 11px;
-    color: var(--color-neutral-1);
+    display: block;
     text-align: right;
+    font-size: 0.8rem;
+    margin-top: 8px;
+    font-weight: 600;
 }
 
-/* Histórico */
-#history_container {
-    width: 400px;
-    margin-top: 15px;
-    color: var(--color-neutral-1);
-    background-color: var(--color-neutral-2);
-    padding: 15px;
-    border-radius: 8px;
-}
-
-#history_list {
-    list-style: none;
-    margin-top: 10px;
-}
-
-#history_list li {
-    font-size: 13px;
-    padding: 5px 0;
-    border-bottom: 1px solid #333;
+/* Checkboxes Modernos */
+.checkbox-stack {
     display: flex;
-    justify-content: space-between;
-}
-
-/* Botões */
-.button-group {
-    display: flex;
-    gap: 10px;
-}
-
-#copy,
-#toggle_visibility {
-    background-color: transparent;
-    border: none;
-    color: var(--color-primary-1);
-    font-size: 18px;
-    cursor: pointer;
-    transition: transform 0.2s, color 0.4s;
-}
-
-#copy:active,
-#toggle_visibility:active {
-    transform: scale(0.9);
-}
-
-/* Medidor de Força */
-#strength_container {
-    width: 100%;
-    max-width: 400px;
-    display: none;
     flex-direction: column;
-    margin-bottom: 10px;
+    gap: 14px;
+    margin: 25px 0;
+}
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    background: var(--icon-bg-default);
+    border: 1px solid transparent;
+    transition: var(--transition-smooth);
+}
+.checkbox-item:hover {
+    border-color: var(--color-primary);
+    background: rgba(78, 190, 190, 0.05);
+}
+/* Estilizando o próprio input checkbox (Chrome/Edge) */
+.checkbox-item input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
 }
 
-#strength_bar {
-    height: 5px;
-    border-radius: 10px;
-    background: #444;
-    transition: all 0.5s ease;
-    width: 0%;
+/* Inputs de Texto */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.input-group input, #size {
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    width: 100%;
+    transition: var(--transition-smooth);
+    font-size: 0.95rem;
+}
+.input-group input:focus, #size:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(78, 190, 190, 0.2);
 }
 
-#strength_text {
-    color: #fff;
-    font-size: 10px;
-    text-align: right;
-    margin-top: 4px;
-}
-
-/* Ajuste nos Botões Inferiores */
+/* --- BOTÕES --- */
 .button-row {
     display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-#generate {
-    flex: 2;
-}
-
-#clear_btn {
-    flex: 1;
-    background-color: transparent;
-    border: 1px solid #dc2626;
-    color: #dc2626;
-    margin-top: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#clear_btn:hover {
-    background-color: #dc2626;
-    color: white;
-}
-
-/* Histórico */
-#history_container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--color-neutral-2);
-    padding: 15px;
-    border-radius: 8px;
+    gap: 12px;
     margin-top: 20px;
-    color: var(--color-neutral-1);
 }
 
-#history_list {
-    list-style: none;
-    padding: 0;
-    margin-top: 10px;
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: var(--color-bg-main);
+    border: none;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(78, 190, 190, 0.3);
 }
 
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(78, 190, 190, 0.4);
+    filter: brightness(1.1);
+}
+/* Ícone dentro do botão primário (ajuste de cor) */
+.btn-primary i.fa-solid {
+    background: rgba(0,0,0,0.2); /* Fundo mais escuro dentro do botão brilhante */
+    color: var(--color-bg-main);
+    border: none;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-danger);
+    color: var(--color-danger);
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.btn-outline:hover {
+    background: var(--color-danger);
+    color: white;
+    box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+}
+
+/* --- LISTAS (Histórico e Cofre) --- */
+ul { list-style: none; }
+
+/* Item do Histórico */
 #history_list li {
-    font-size: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid #333;
-    /* Mudança aqui para alinhar senha e botões */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid var(--icon-border-default);
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+#history_list li:last-child { border-bottom: none; }
+.history-copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+/* Ajuste para o ícone do histórico ser menor */
+.history-copy-btn i.fa-solid {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
 }
 
-/* Estilos para a senha dentro do histórico */
-.history-pass-text {
+
+/* Item do Cofre */
+.vault-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: var(--color-input-bg);
+    padding: 18px;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+    transition: var(--transition-smooth);
+}
+.vault-item:hover {
+    border-color: var(--color-border-hover);
+    transform: translateX(5px); /* Animação diferente para a lista */
+}
+
+.vault-info {
     flex: 1;
-    /* Ocupa o espaço restante */
+    overflow: hidden;
+}
+.vault-info p {
+    color: var(--color-text-main);
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 10px;
-    font-family: 'Roboto Mono', monospace;
 }
+.vault-info small { color: var(--color-text-muted); }
 
-/* Container dos botões do histórico */
-.history-actions {
+.vault-actions {
     display: flex;
-    gap: 5px;
+    gap: 8px;
 }
-
-/* Botões pequenos do histórico */
-.history-btn {
+.vault-actions button {
     background: transparent;
     border: none;
-    color: var(--color-primary-1);
     cursor: pointer;
-    font-size: 14px;
-    padding: 4px;
-    transition: color 0.3s;
+    padding: 0;
 }
 
-.history-btn:hover {
-    color: var(--color-primary-2);
+/* Botão de Reset */
+#reset_btn {
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+    width: 100%;
+    margin-top: 25px;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition-smooth);
 }
-
-/* RESPONSIVIDADE */
-
-@media screen and (max-width: 1020px) {
-
-    /* Items */
-    #password_items {
-        width: 100%;
-        border-radius: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 18px;
-    }
-
-    #generate {
-        border-radius: 10px;
-    }
+#reset_btn:hover {
+    background: var(--color-danger);
+    color: white;
 }

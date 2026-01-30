@@ -4,107 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link to Font Awesome CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#8BC34A">
-    <!-- Link to Toastify CSS -->
+    <title>Gerador & Cofre de Senhas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <!-- Custom styles -->
     <link rel="stylesheet" href="src/styles/styles.css">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
-        }
-    </script>
-    <title>Password Generator</title>
 </head>
 
 <body>
     <div id="container">
-        <!-- Password generation illustration -->
-        <img src="src/images/lock-solid-full.svg" id="password_img" alt="">
-        <!-- Title -->
-        <h1 id="title">Gerar senhas</h1>
+        <nav class="app-nav">
+            <button onclick="showPage('generator')" id="btn_nav_generator" class="active">
+                <i class="fa-solid fa-key"></i> Gerador
+            </button>
+            <button onclick="showPage('vault')" id="btn_nav_vault">
+                <i class="fa-solid fa-vault"></i> Meu Cofre
+            </button>
+        </nav>
 
-        <!-- Password display container -->
-        <div id="password_container">
-            <span id="password"></span>
-            <div class="button-group">
-                <!-- Copy button -->
-                <button id="copy" title="Copiar senha">
-                    <i class="fa-solid fa-copy"></i>
+        <section id="page_generator" class="page">
+            <img src="src/images/lock-solid-full.svg" id="password_img" alt="Logo">
+            <h1 id="title">Gerar Senha</h1>
+
+            <div id="password_container">
+                <span id="password" class="password-text"></span>
+                <div class="password-actions">
+                    <button id="toggle_visibility" class="action-btn" title="Mostrar/Esconder Senha">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button id="copy" class="action-btn" title="Copiar para a área de transferência">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="strength_container">
+                <div id="strength_bar"></div>
+                <span id="strength_text"></span>
+            </div>
+
+            <div class="card" id="password_items">
+                <div class="item">
+                    <input id="size" type="number" min="4" max="50" value="12">
+                    <label for="size">Caracteres</label>
+                </div>
+                <div class="checkbox-stack">
+                    <label class="checkbox-item"><input type="checkbox" id="include_uppercase" checked> Letras
+                        Maiúsculas (ABC)</label>
+                    <label class="checkbox-item"><input type="checkbox" id="include_lowercase" checked> Letras
+                        Minúsculas (abc)</label>
+                    <label class="checkbox-item"><input type="checkbox" id="include_number" checked> Números
+                        (123)</label>
+                    <label class="checkbox-item"><input type="checkbox" id="include_special_character" checked> Símbolos
+                        (#$&)</label>
+                </div>
+                <div class="button-row">
+                    <button id="generate" class="btn-primary">Gerar Senha</button>
+                    <button id="clear_btn" class="btn-outline">Limpar</button>
+                </div>
+            </div>
+
+            <div class="card" id="save_box">
+                <h4>Salvar no Cofre</h4>
+                <div class="input-group">
+                    <input type="text" id="service_name" placeholder="Serviço (ex: Netflix)">
+                    <input type="text" id="service_user" placeholder="Usuário/E-mail">
+                    <button id="save_password_btn" class="btn-primary">Criptografar e Salvar</button>
+                </div>
+            </div>
+
+            <div class="card" id="history_container">
+                <h4>Histórico Recente</h4>
+                <ul id="history_list"></ul>
+            </div>
+        </section>
+
+        <section id="page_vault" class="page" style="display: none;">
+            <h1 id="title">Meu Cofre</h1>
+            <div id="vault_auth" class="card">
+                <p>O conteúdo deste cofre é criptografado localmente com sua Senha Mestra.</p>
+                <button onclick="unlockVault()" id="unlock_vault_btn" class="btn-primary">
+                    <i class="fa-solid fa-lock-open"></i> Acessar Cofre
                 </button>
-                <!-- eye button -->
-                <button id="toggle_visibility" title="Mostrar/Esconder">
-                    <i class="fa-solid fa-eye"></i>
-                </button>
             </div>
-        </div>
-
-        <!-- medidor de força -->
-        <div id="strength_container">
-            <div id="strength_bar"></div>
-            <span id="strength_text"></span>
-        </div>
-
-        <!-- Password options -->
-        <div id="password_items">
-            <!-- Password length input -->
-            <div class="item">
-                <input id="size" name="size" type="number" min="4" max="50">
-                <label for="size">
-                    Quantidade de caracteres
-                </label>
-            </div>
-
-            <!-- Uppercase letter checkbox -->
-            <div class="item">
-                <input type="checkbox" name="include_uppercase" id="include_uppercase">
-                <label for="include_uppercase">
-                    Letras maiúsculas
-                </label>
-            </div>
-
-            <!-- Lowercase letter checkbox -->
-            <div class="item">
-                <input type="checkbox" name="include_lowercase" id="include_lowercase">
-                <label for="include_lowercase">
-                    Letras minúsculas
-                </label>
-            </div>
-
-            <!-- Number checkbox -->
-            <div class="item">
-                <input type="checkbox" name="include_number" id="include_number">
-                <label for="include_number">
-                    Inserir número
-                </label>
-            </div>
-
-            <!-- Special character checkbox -->
-            <div class="item">
-                <input type="checkbox" name="include_special_character" id="include_special_character">
-                <label for="include_special_character">
-                    Inserir caracter especial
-                </label>
-            </div>
-
-            <div class="button-row">
-                <button id="generate">Gerar a senha</button>
-                <button id="clear_btn">Limpar</button>
-            </div>
-        </div>
-
-        <div id="history_container">
-            <h4>Histórico (últimas 10)</h4>
-            <ul id="history_list"></ul>
-        </div>
+            <ul id="vault_list" style="display: none;"></ul>
+            <button onclick="resetEverything()" id="reset_btn">Resetar Aplicativo</button>
+        </section>
     </div>
 
-    <!-- Script tags for Toastify and custom script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="src/javascript/script.js"></script>
 </body>
